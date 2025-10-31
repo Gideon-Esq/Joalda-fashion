@@ -1,6 +1,4 @@
-/** @jsxImportSource https://esm.sh/react@18.2.0 */
-import { createRoot } from "https://esm.sh/react-dom@18.2.0/client";
-import React, { useEffect, useState } from "https://esm.sh/react@18.2.0";
+import React, { useEffect, useState } from "react";
 
 // Vibrant color palette reflecting cultural inspiration
 const COLORS = {
@@ -21,86 +19,6 @@ interface Product {
   category: "cultural" | "standard";
   imageUrl: string;
   stockQuantity: number;
-}
-
-export default async function server(request: Request): Promise<Response> {
-  const { sqlite } = await import("https://esm.town/v/stevekrouse/sqlite");
-  const KEY = new URL(import.meta.url).pathname.split("/").at(-1);
-
-  // Initialize products table
-  await sqlite.execute(`
-    CREATE TABLE IF NOT EXISTS ${KEY}_products (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      description TEXT NOT NULL,
-      price REAL NOT NULL,
-      category TEXT NOT NULL,
-      imageUrl TEXT NOT NULL,
-      stockQuantity INTEGER NOT NULL
-    )
-  `);
-
-  // Handle routes
-  const url = new URL(request.url);
-
-  if (url.pathname === "/products" && request.method === "GET") {
-    const result = await sqlite.execute(`SELECT * FROM ${KEY}_products`);
-    return Response.json(result.rows);
-  }
-
-  if (url.pathname === "/add-product" && request.method === "POST") {
-    const product = await request.json();
-    await sqlite.execute(
-      `INSERT INTO ${KEY}_products 
-      (name, description, price, category, imageUrl, stockQuantity) 
-      VALUES (?, ?, ?, ?, ?, ?)`,
-      [
-        product.name,
-        product.description,
-        product.price,
-        product.category,
-        product.imageUrl,
-        product.stockQuantity,
-      ],
-    );
-    return Response.json({ success: true });
-  }
-
-  // New route for deleting products
-  const deleteMatch = url.pathname.match(/^\/delete-product\/(\d+)$/);
-  if (deleteMatch && request.method === "DELETE") {
-    const productId = deleteMatch[1];
-    await sqlite.execute(`DELETE FROM ${KEY}_products WHERE id = ?`, [productId]);
-    return Response.json({ success: true });
-  }
-
-  // Serve HTML for the main application
-  return new Response(
-    `
-    <html>
-      <head>
-        <title>Joalda Fashion</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <style>
-          body { 
-            margin: 0; 
-            font-family: 'Raleway', 'Garamond', serif; 
-          }
-        </style>
-      </head>
-      <body>
-        <div id="root"></div>
-        <script src="https://esm.town/v/std/catch"></script>
-        <script type="module" src="${import.meta.url}"></script>
-      </body>
-    </html>
-  `,
-    {
-      headers: { "Content-Type": "text/html" },
-    },
-  );
 }
 
 function SecurityQuestionModal({
@@ -285,7 +203,7 @@ function Footer() {
     </footer>
   );
 }
-function App() {
+export default function App() {
   const [view, setView] = useState<"home" | "cart" | "add-product" | "product-detail">("home");
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<Product[]>([]);
@@ -649,15 +567,7 @@ function App() {
   }
   return (
     <div>
-      <nav
-        style={{
-          backgroundColor: COLORS.primary,
-          color: "white",
-          display: "flex",
-          justifyContent: "space-around",
-          padding: "10px",
-        }}
-      >
+      <nav>
         <button onClick={() => setView("home")}>Home</button>
         <button onClick={() => setView("cart")}>Cart ({cart.length})</button>
         <button onClick={() => setView("add-product")}>Add Product</button>
@@ -679,8 +589,3 @@ function App() {
     </div>
   );
 }
-
-function client() {
-  createRoot(document.getElementById("root")).render(<App />);
-}
-if (typeof document !== "undefined") { client(); 

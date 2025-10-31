@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+  font-family: 'Raleway', 'Garamond', serif;
+}
+
+nav {
+  background-color: #8B4513;
+  color: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+}
+
+nav button {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}

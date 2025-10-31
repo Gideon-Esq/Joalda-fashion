@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Bun
+bun.lockb
+
+# Logs
+*.log
+
+# Data
+*.sqlite

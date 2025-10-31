@@ -1,0 +1,11 @@
+{
+  "name": "joalda-fashion",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "bun run server.tsx"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  }
+}
