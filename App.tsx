@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 
-// Vibrant color palette reflecting cultural inspiration
+/**
+ * @file Joalda Fashion App
+ * @description This file contains the main application logic for the Joalda Fashion e-commerce platform.
+ * It includes components for displaying products, managing the shopping cart, and adding new products.
+ * The application is built using React and features a client-server architecture.
+ */
+
+/**
+ * Vibrant color palette reflecting cultural inspiration.
+ * @const {object} COLORS
+ */
 const COLORS = {
   primary: "#8B4513", // Rich earthy brown
   secondary: "#FFA500", // Warm orange
@@ -10,7 +20,10 @@ const COLORS = {
   danger: "#DC143C", // Crimson for delete actions
 };
 
-// Product type definition
+/**
+ * Represents a product in the store.
+ * @interface Product
+ */
 interface Product {
   id?: number;
   name: string;
@@ -21,6 +34,14 @@ interface Product {
   stockQuantity: number;
 }
 
+/**
+ * A modal component that presents a security question to the user.
+ * @param {object} props - The component's props.
+ * @param {() => void} props.onClose - Function to call when the modal is closed.
+ * @param {() => void} props.onSuccess - Function to call when the security question is answered correctly.
+ * @param {"add" | "delete"} props.actionType - The type of action being performed.
+ * @returns {JSX.Element} The rendered security question modal.
+ */
 function SecurityQuestionModal({
   onClose,
   onSuccess,
@@ -33,6 +54,10 @@ function SecurityQuestionModal({
   const [answer, setAnswer] = useState("");
   const [error, setError] = useState("");
 
+  /**
+   * Handles the form submission for the security question.
+   * @param {React.FormEvent} e - The form event.
+   */
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (answer.trim() === "2024") {
@@ -115,6 +140,10 @@ function SecurityQuestionModal({
   );
 }
 
+/**
+ * The footer component for the application.
+ * @returns {JSX.Element} The rendered footer.
+ */
 function Footer() {
   return (
     <footer
@@ -203,6 +232,10 @@ function Footer() {
     </footer>
   );
 }
+/**
+ * The main application component.
+ * @returns {JSX.Element} The rendered application.
+ */
 export default function App() {
   const [view, setView] = useState<"home" | "cart" | "add-product" | "product-detail">("home");
   const [products, setProducts] = useState<Product[]>([]);
@@ -225,21 +258,35 @@ export default function App() {
     fetchProducts();
   }, []);
 
+  /**
+   * Fetches the list of products from the server.
+   */
   async function fetchProducts() {
     const response = await fetch("/products");
     const data = await response.json();
     setProducts(data);
   }
 
+  /**
+   * Initiates the process of deleting a product.
+   * @param {number} productId - The ID of the product to delete.
+   */
   async function deleteProduct(productId: number) {
     setPendingAction({ type: "delete", data: productId });
     setShowSecurityModal(true);
   }
 
+  /**
+   * Adds a product to the shopping cart.
+   * @param {Product} product - The product to add to the cart.
+   */
   function addToCart(product: Product) {
     setCart([...cart, product]);
   }
 
+  /**
+   * Processes the pending action (add or delete) after the security question is answered.
+   */
   function processPendingAction() {
     if (!pendingAction) return;
 
@@ -271,6 +318,10 @@ export default function App() {
     setPendingAction(null);
   }
 
+  /**
+   * A form for adding a new product.
+   * @returns {JSX.Element} The rendered form.
+   */
   function AddProductForm() {
     const [newProduct, setNewProduct] = useState<Product>({
       name: "",
@@ -281,6 +332,10 @@ export default function App() {
       stockQuantity: 0,
     });
 
+    /**
+     * Handles the form submission for adding a new product.
+     * @param {React.FormEvent} e - The form event.
+     */
     async function handleSubmit(e: React.FormEvent) {
       e.preventDefault();
       setPendingAction({ type: "add", data: newProduct });
@@ -390,6 +445,10 @@ export default function App() {
     );
   }
 
+  /**
+   * Renders the main content of the application based on the current view.
+   * @returns {JSX.Element | null} The rendered content.
+   */
   function renderContent() {
     switch (view) {
       case "home":

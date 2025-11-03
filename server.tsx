@@ -1,6 +1,15 @@
 import { Database } from "bun:sqlite";
 
-// Product type definition
+/**
+ * @file Server-side logic for the Joalda Fashion application.
+ * @description This file sets up a Bun server to handle API requests, serve static files,
+ * and manage the SQLite database.
+ */
+
+/**
+ * Represents a product in the store.
+ * @interface Product
+ */
 interface Product {
   id?: number;
   name: string;
@@ -31,6 +40,11 @@ console.log("Server starting...");
 
 Bun.serve({
   port: 3000,
+  /**
+   * Handles incoming HTTP requests.
+   * @param {Request} request - The incoming request object.
+   * @returns {Promise<Response>} A promise that resolves to a Response object.
+   */
   async fetch(request) {
     const url = new URL(request.url);
     console.log(`${request.method} ${url.pathname}`);
