@@ -32,8 +32,8 @@ Follow these steps to get the application up and running on your local machine.
 
 1.  **Clone the Repository:**
     ```bash
-    git clone <repository-url>
-    cd <repository-directory>
+    git clone https://github.com/Gideon-Esq/Joalda-fashion
+    cd Joalda-fashion
     ```
 
 2.  **Install Dependencies:**
