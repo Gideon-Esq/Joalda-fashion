@@ -1,0 +1,6 @@
+node_modules/
+public/client.js
+*.sqlite
+*.db
+.env
+*.log
