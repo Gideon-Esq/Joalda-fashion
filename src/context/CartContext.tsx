@@ -42,13 +42,27 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const addToCart = (product: Product) => {
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id);
+      
+      // Validation: Check stock availability
+      if (product.stockQuantity === 0) {
+        console.warn('Product is out of stock');
+        return prev;
+      }
+      
       if (existing) {
+        // Validation: Don't exceed available stock
+        if (existing.quantity >= product.stockQuantity) {
+          console.warn('Cannot add more items than available stock');
+          return prev;
+        }
+        
         return prev.map(item =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       }
+      
       return [...prev, { ...product, quantity: 1 }];
     });
   };
@@ -58,14 +72,29 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateQuantity = (productId: number, quantity: number) => {
-    if (quantity <= 0) {
+    // Validation: Ensure quantity is valid
+    if (quantity < 0) {
+      console.warn('Quantity cannot be negative');
+      return;
+    }
+    
+    if (quantity === 0) {
       removeFromCart(productId);
       return;
     }
+    
     setCart(prev =>
-      prev.map(item =>
-        item.id === productId ? { ...item, quantity } : item
-      )
+      prev.map(item => {
+        if (item.id === productId) {
+          // Validation: Don't exceed available stock
+          const validQuantity = Math.min(quantity, item.stockQuantity);
+          if (validQuantity !== quantity) {
+            console.warn('Quantity adjusted to available stock');
+          }
+          return { ...item, quantity: validQuantity };
+        }
+        return item;
+      })
     );
   };
 

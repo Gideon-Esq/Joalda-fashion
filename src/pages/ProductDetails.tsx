@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Product, useCart } from '../context/CartContext';
+import { ProductDetailSkeleton } from '../components/SkeletonLoader';
 
 export function ProductDetails() {
   const { id } = useParams<{ id: string }>();
@@ -18,7 +19,7 @@ export function ProductDetails() {
       });
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <ProductDetailSkeleton />;
   if (!product) return <div>Product not found</div>;
 
   return (
